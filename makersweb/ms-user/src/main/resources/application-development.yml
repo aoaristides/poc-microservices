@@ -1,0 +1,8 @@
+db:
+  username: makersweb
+  password: Salmos89
+  schema: ms-user
+  url: localhost:5432
+
+server:
+  port: 8081
