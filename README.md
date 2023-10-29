@@ -12,6 +12,6 @@ Nesta PoC vamos abordar a criação de um Sistema EAD, onde vamos aplicar alguns
 
 # Arquitetura
 
-A principio vamos criar 4 Microsserviços sendo eles (**User Service**, ***Course Service**, **Payment Service** e **Notification Service**), como mostrado na imagem abaixo:
+A principio vamos criar 4 Microsserviços sendo eles (**User Service**, **Course Service**, **Payment Service** e **Notification Service**), como mostrado na imagem abaixo:
 
 ![Arquitetura - Sistema EAD](./arquitetura/imagens/arquitetura.png)
