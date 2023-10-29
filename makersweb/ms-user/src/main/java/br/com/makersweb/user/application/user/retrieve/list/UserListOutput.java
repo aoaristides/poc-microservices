@@ -21,6 +21,7 @@ import java.util.List;
  * @author aaristides
  */
 public record UserListOutput(
+        String id,
         String name,
         String document,
         String mail,
@@ -35,6 +36,7 @@ public record UserListOutput(
 
     public static UserListOutput from(final User aUser) {
         return new UserListOutput(
+                aUser.getId().getValue(),
                 aUser.getName(),
                 aUser.getDocument(),
                 aUser.getMail(),
