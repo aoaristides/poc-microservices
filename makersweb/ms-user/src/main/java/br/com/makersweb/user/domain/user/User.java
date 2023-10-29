@@ -1,12 +1,16 @@
 package br.com.makersweb.user.domain.user;
 
 import br.com.makersweb.user.domain.AggregateRoot;
-import br.com.makersweb.user.domain.address.Address;
+import br.com.makersweb.user.domain.address.AddressID;
+import br.com.makersweb.user.domain.exceptions.NotificationException;
+import br.com.makersweb.user.domain.utils.InstantUtils;
 import br.com.makersweb.user.domain.validation.ValidationHandler;
+import br.com.makersweb.user.domain.validation.handler.Notification;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +21,7 @@ public class User extends AggregateRoot<UserID> {
     private String name;
     private String document;
     private String mail;
-    private List<Address> addresses;
+    private List<AddressID> addresses;
     private LocalDate birthDate;
     private String phoneNumber;
     private boolean active;
@@ -30,7 +34,7 @@ public class User extends AggregateRoot<UserID> {
             final String name,
             final String document,
             final String mail,
-            final List<Address> addresses,
+            final List<AddressID> addresses,
             final LocalDate birthDate,
             final String phoneNumber,
             final boolean active,
@@ -60,7 +64,7 @@ public class User extends AggregateRoot<UserID> {
             final boolean active
     ) {
         final var anId = UserID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
         return new User(anId, name, document, mail, new ArrayList<>(), birthDate, phoneNumber, active, now, now, deletedAt);
     }
@@ -70,7 +74,7 @@ public class User extends AggregateRoot<UserID> {
             final String name,
             final String document,
             final String mail,
-            final List<Address> addresses,
+            final List<AddressID> addresses,
             final LocalDate birthDate,
             final String phoneNumber,
             final boolean active,
@@ -97,6 +101,32 @@ public class User extends AggregateRoot<UserID> {
         );
     }
 
+    public User update(
+            final String name,
+            final String document,
+            final String mail,
+            final List<AddressID> addresses,
+            final LocalDate birthDate,
+            final String phoneNumber,
+            final boolean isActive
+    ) {
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+
+        this.name = name;
+        this.document = document;
+        this.mail = mail;
+        this.addresses = new ArrayList<>(addresses != null ? addresses : Collections.emptyList());
+        this.birthDate = birthDate;
+        this.phoneNumber = phoneNumber;
+        this.updatedAt = InstantUtils.now();
+        selfValidate();
+        return this;
+    }
+
     @Override
     public void validate(final ValidationHandler handler) {
         new UserValidator(this, handler).validate();
@@ -105,17 +135,53 @@ public class User extends AggregateRoot<UserID> {
     public User activate() {
         this.deletedAt = null;
         this.active = true;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
         return this;
     }
 
     public User deactivate() {
         if (getDeletedAt() == null) {
-            this.deletedAt = Instant.now();
+            this.deletedAt = InstantUtils.now();
         }
 
         this.active = false;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    private void selfValidate() {
+        final var notification = Notification.create();
+        validate(notification);
+
+        if (notification.hasError()) {
+            throw new NotificationException("Failed to create a Aggregate Genre", notification);
+        }
+    }
+
+    public User addAddress(final AddressID aAddressID) {
+        if (aAddressID == null) {
+            return this;
+        }
+        this.addresses.add(aAddressID);
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public User addAddresses(final List<AddressID> addresses) {
+        if (addresses == null || addresses.isEmpty()) {
+            return this;
+        }
+        this.addresses.addAll(addresses);
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public User removeAddress(final AddressID aAddressID) {
+        if (aAddressID == null) {
+            return this;
+        }
+        this.addresses.remove(aAddressID);
+        this.updatedAt = InstantUtils.now();
         return this;
     }
 
@@ -136,7 +202,7 @@ public class User extends AggregateRoot<UserID> {
         return mail;
     }
 
-    public List<Address> getAddresses() {
+    public List<AddressID> getAddresses() {
         return addresses;
     }
 

@@ -30,7 +30,7 @@ public class AddressID extends Identifier {
     }
 
     @Override
-    protected String getValue() {
+    public String getValue() {
         return value;
     }
 

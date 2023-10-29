@@ -1,6 +1,7 @@
 package br.com.makersweb.user.domain.address;
 
 import br.com.makersweb.user.domain.AggregateRoot;
+import br.com.makersweb.user.domain.utils.InstantUtils;
 import br.com.makersweb.user.domain.validation.ValidationHandler;
 
 import java.time.Instant;
@@ -61,7 +62,7 @@ public class Address extends AggregateRoot<AddressID> {
             final boolean active
     ) {
         final var anId = AddressID.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = active ? null : now;
         return new Address(anId, street, streetNumber, city, state, postalCode, complement, neighborhood, active, now, now, deletedAt);
     }
@@ -103,17 +104,17 @@ public class Address extends AggregateRoot<AddressID> {
     public Address activate() {
         this.deletedAt = null;
         this.active = true;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
         return this;
     }
 
     public Address deactivate() {
         if (getDeletedAt() == null) {
-            this.deletedAt = Instant.now();
+            this.deletedAt = InstantUtils.now();
         }
 
         this.active = false;
-        this.updatedAt = Instant.now();
+        this.updatedAt = InstantUtils.now();
         return this;
     }
 
