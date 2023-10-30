@@ -14,6 +14,7 @@ import br.com.makersweb.user.domain.validation.handler.Notification;
 import io.vavr.control.Either;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -90,8 +91,8 @@ public class DefaultUpdateUserUseCase extends UpdateUserUseCase {
     }
 
     private List<AddressID> toAddressID(final List<String> addresses) {
-        return addresses.stream()
+        return !addresses.isEmpty() ? addresses.stream()
                 .map(AddressID::from)
-                .toList();
+                .toList() : Collections.emptyList();
     }
 }

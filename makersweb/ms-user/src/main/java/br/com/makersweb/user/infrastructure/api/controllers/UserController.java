@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -58,7 +57,7 @@ public class UserController implements UserAPI {
                 input.name(),
                 input.document(),
                 input.mail(),
-                Collections.emptyList(),
+                input.addresses(),
                 input.birthDate(),
                 input.phoneNumber(),
                 input.active() != null ? input.active() : true
@@ -97,17 +96,15 @@ public class UserController implements UserAPI {
                 input.name(),
                 input.document(),
                 input.mail(),
-                null,
+                input.addresses(),
                 input.birthDate(),
                 input.phoneNumber(),
                 input.active() != null ? input.active() : true
         );
 
-        final Function<Notification, ResponseEntity<?>> onError = notification ->
-                ResponseEntity.unprocessableEntity().body(notification);
+        final Function<Notification, ResponseEntity<?>> onError = notification -> ResponseEntity.unprocessableEntity().body(notification);
 
-        final Function<UpdateUserOutput, ResponseEntity<?>> onSuccess =
-                ResponseEntity::ok;
+        final Function<UpdateUserOutput, ResponseEntity<?>> onSuccess = ResponseEntity::ok;
 
         return this.updateUserUseCase.execute(aCommand).fold(onError, onSuccess);
     }

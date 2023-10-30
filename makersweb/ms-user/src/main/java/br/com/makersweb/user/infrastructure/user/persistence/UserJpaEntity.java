@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,10 +26,10 @@ public class UserJpaEntity implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "document", nullable = false, length = 14)
+    @Column(name = "document", nullable = false, length = 14, unique = true)
     private String document;
 
-    @Column(name = "mail", nullable = false)
+    @Column(name = "mail", nullable = false, unique = true)
     private String mail;
 
     @Column(name = "birth_date", nullable = false, columnDefinition = "DATE")
@@ -74,6 +75,7 @@ public class UserJpaEntity implements Serializable {
         this.birthDate = birthDate;
         this.phoneNumber = phoneNumber;
         this.active = active;
+        this.addresses = new HashSet<>();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;

@@ -1,6 +1,5 @@
 package br.com.makersweb.user.application.address.create;
 
-import br.com.makersweb.user.application.user.create.CreateUserOutput;
 import br.com.makersweb.user.domain.address.Address;
 
 /**

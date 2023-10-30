@@ -72,7 +72,7 @@ public class DefaultCreateUserUseCase extends CreateUserUseCase {
                     .map(AddressID::getValue)
                     .collect(Collectors.joining(", "));
 
-            notification.append(new Error("Some categories could not be found: %s".formatted(missingIdsMessage)));
+            notification.append(new Error("Some address could not be found: %s".formatted(missingIdsMessage)));
         }
 
         return notification;

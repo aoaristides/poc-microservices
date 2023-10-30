@@ -20,13 +20,13 @@ public class UserAddressID implements Serializable {
 
     public UserAddressID() {}
 
-    public UserAddressID(final String addressId, final String userId) {
+    public UserAddressID(final String userId, final String addressId) {
         this.addressId = addressId;
         this.userId = userId;
     }
 
-    public static UserAddressID from(final String aGenreId, final String aCategoryId) {
-        return new UserAddressID(aGenreId, aCategoryId);
+    public static UserAddressID from(final String aUserId, final String aAddressId) {
+        return new UserAddressID(aUserId, aAddressId);
     }
 
     @Override
