@@ -8,6 +8,8 @@ server:
     min-response-size: 1024 # Minimum "Content-Length" value that is required for compression to be performed.
 
 spring:
+  rabbitmq:
+    addresses: amqp://admin:admin@localhost:5672
   datasource:
     url: jdbc:postgresql://${db.url}/${db.schema}
     username: ${db.username}
@@ -31,3 +33,9 @@ spring:
       "[hibernate.connection.provider_disables_autocommit]": true
       # Para aumentar a performance ao máximo, desabilitamos o auto-commit e o open-in-view.
       # https://vladmihalcea.com/why-you-should-always-use-hibernate-connection-provider_disables_autocommit-for-resource-local-jpa-transactions/
+
+## Configs Broker de Messages
+broker:
+  queue:
+    mail:
+      name: default.email

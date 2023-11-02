@@ -5,6 +5,8 @@ import br.com.makersweb.user.domain.pagination.SearchQuery;
 import br.com.makersweb.user.domain.user.User;
 import br.com.makersweb.user.domain.user.UserGateway;
 import br.com.makersweb.user.domain.user.UserID;
+import br.com.makersweb.user.infrastructure.producers.user.UserProducer;
+import br.com.makersweb.user.infrastructure.producers.user.models.CreateUserRequest;
 import br.com.makersweb.user.infrastructure.user.persistence.UserJpaEntity;
 import br.com.makersweb.user.infrastructure.user.persistence.UserRepository;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -25,14 +28,23 @@ import static br.com.makersweb.user.infrastructure.utils.SpecificationUtils.like
 public class UserPostgreSQLGateway implements UserGateway {
 
     private final UserRepository repository;
+    private final UserProducer userProducer;
 
-    public UserPostgreSQLGateway(final UserRepository repository) {
+    public UserPostgreSQLGateway(final UserRepository repository, final UserProducer userProducer) {
         this.repository = repository;
+        this.userProducer = userProducer;
     }
 
     @Override
     public User create(final User aUser) {
-        return save(aUser);
+        final var user = save(aUser);
+
+        if (Objects.nonNull(user)) {
+            final var sendUser = CreateUserRequest.with(user.getId().getValue(), user.getName(), user.getDocument(), user.getMail(), "CREATED");
+            this.userProducer.sendMessage(sendUser);
+        }
+
+        return user;
     }
 
     @Override
